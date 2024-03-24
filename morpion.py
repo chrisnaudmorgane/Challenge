@@ -7,30 +7,33 @@ player = "X"  # Joueur actuel (X ou O)
 board = [[" " for _ in range(3)] for _ in range(3)]  # Tableau pour stocker les cases
 buttons = []  # Liste pour stocker les instances de boutons
 
+
 def interface_menu():
     fenetre = tk.Tk()
     fenetre.title("TicTacToe")
     fenetre.geometry("800x600")
-
     menu_barre = tk.Menu(fenetre)
     menu_file = tk.Menu(menu_barre, tearoff=0)
     menu_barre.add_cascade(label="File", menu=menu_file)
-    menu_file.add_command(label="nouveau", command=draw_grid)
     menu_file.add_separator()
     menu_file.add_command(label="Quitter", command=fenetre.quit)
     fenetre.config(menu=menu_barre)
-    draw_grid()
+    draw_grid(fenetre)
     fenetre.mainloop()
 
-def draw_grid():
+
+def draw_grid(fenetre):
+    grid_frame = tk.Frame(fenetre)
+    grid_frame.place(relx=0.5, rely=0.5, anchor="center")
+
     for i in range(3):
         row = []
         for j in range(3):
-            button = tk.Button(root, text=" ", font=("Helvetica", 20), width=5, height=2,
-                                bg="red", command=lambda x=i, y=j: handle_click(x, y))
+            button = tk.Button(grid_frame, text=" ", font=("Helvetica", 20), width=5, height=2, bg="red", command=lambda x=i, y=j: handle_click(x, y))
             button.grid(row=i, column=j)
             row.append(button)
         buttons.append(row)
+
 
 def handle_click(row, col):
     global player
@@ -54,6 +57,7 @@ def handle_click(row, col):
         # Passer au joueur suivant
         player = "O" if player == "X" else "X"
 
+
 def check_win(player):
     # Vérifier les lignes
     for row in board:
@@ -69,11 +73,13 @@ def check_win(player):
         return True
     return False
 
+
 def check_tie():
     for row in board:
         if any(cell == " " for cell in row):
             return False
     return True
+
 
 def reset_game():
     global player, board
@@ -83,6 +89,6 @@ def reset_game():
         for col in range(3):
             buttons[row][col].config(text=" ")
 
+
 if __name__ == "__main__":
-    root = tk.Tk()
     interface_menu()
